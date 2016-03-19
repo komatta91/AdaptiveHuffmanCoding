@@ -4,16 +4,20 @@
 
 #include <CodeTree.h>
 
-#include <cassert>
 #include <boost/dynamic_bitset.hpp>
 
 #include <iostream>
 
 std::string CodeTree::mPrefix = "NOD";
 
-CodeTree::CodeTree() : mGenerator(mPrefix) {
+CodeTree::CodeTree() : mGenerator(mPrefix), newSymbolNext(false) {
     mRoot = NodePtr(new Node(nullptr));
 };
+
+
+std::string CodeTree::zeroCode() {
+    return getNode(std::string("ZERO"))->getCode();
+}
 
 std::string CodeTree::getCode(char input) {
     std::string result;
@@ -22,7 +26,7 @@ std::string CodeTree::getCode(char input) {
         result = node->getCode();
     }
     else {
-        result = encode(input);
+        result = zeroCode() + encode(input);
     }
     updateModel(input, node);
     return result;
@@ -35,25 +39,41 @@ std::string CodeTree::getDecoded(std::string bits) {
 
     mDecodeQueue = mDecodeQueue.append(bits);
     unsigned int queuePos = 0;
-
-    while (!list.empty() && !mDecodeQueue.empty() && queuePos < mDecodeQueue.length()) {
+    while (!list.empty() && queuePos < mDecodeQueue.length() && mDecodeQueue.length()>=8) {
         NodePtr node = list.front();
         list.pop_front();
         assert(node);
 
-        if(node->isZero()){
+        if(node->isZero() && !newSymbolNext){
+            newSymbolNext = true;
+            mDecodeQueue = mDecodeQueue.substr(zeroCode().length());
+            if(mDecodeQueue.length()>=8){
+                list.clear();
+                list.push_back(mRoot);
+                queuePos = 0;
+                continue;
+            }
+            break;
+        }
+        if(newSymbolNext){
             char newSymbol = decode(mDecodeQueue);
             result += newSymbol;
-            mDecodeQueue = mDecodeQueue.length() > 8 ? mDecodeQueue.substr(8) : "";
             getCode(newSymbol);
-            break;
+            mDecodeQueue = mDecodeQueue.substr(8);
+            if(newSymbolNext){
+                newSymbolNext=false;
+            }
+            list.clear();
+            list.push_back(mRoot);
+            queuePos = 0;
+            continue;
         }
 
         if(!node->isInternalNode()){
-            std::string d = node->mSymbol;
             assert(node->mSymbol.length() == 1);
+
             result += node->mSymbol;
-            getCode(node->mSymbol.front());
+            std::string code = getCode(node->mSymbol.front());
 
             list.clear();
             list.push_back(mRoot);
@@ -82,7 +102,6 @@ CodeTree::NodePtr CodeTree::getNode(std::string symbol) {
         NodePtr node = list.front();
         list.pop_front();
         assert(node);
-        std::string d = node->toString();
         if (node->mSymbol == symbol) {
             return node;
         }
@@ -156,8 +175,6 @@ CodeTree::NodePtr CodeTree::addNode(char symbol) {
 
  */
 
-//    std::cerr<<"ADD NODE:"<<'\n';
-//    std::cerr<<zero->toString()<<'\n'<<'\n';
     return zero;
 }
 
@@ -170,9 +187,6 @@ void CodeTree::processNode(NodePtr node) {
         swapNodes(node, maxNode);
     }
     node->mCount++;
-
-//    std::cerr<<"NEW WIIGHT:"<<'\n';
-//    std::cerr<<node->toString()<<'\n'<<'\n';
 
     if (node->mParent) {
         processNode(node->mParent);
@@ -205,12 +219,6 @@ void CodeTree::swapNodes(NodePtr a, NodePtr b) {
     NodePtr aParent = a->mParent;
     NodePtr bParent = b->mParent;
 
-//    std::cerr<<"BEFORE SWAP:"<<'\n';
-//    std::cerr<<aParent->toString()<<'\n';
-//    std::cerr<<bParent->toString()<<'\n';
-//    std::cerr<<a->toString()<<'\n';
-//    std::cerr<<b->toString()<<'\n'<<'\n';
-
     if (aParent->mSymbol == bParent->mSymbol) {
         NodePtr temp = aParent->mLeft;
         aParent->mLeft = aParent->mRight;
@@ -233,12 +241,6 @@ void CodeTree::swapNodes(NodePtr a, NodePtr b) {
         a->mParent = bParent;
         b->mParent = aParent;
     }
-
-//    std::cerr<<"AFTER SWAP:"<<'\n';
-//    std::cerr<<aParent->toString()<<'\n';
-//    std::cerr<<bParent->toString()<<'\n';
-//    std::cerr<<a->toString()<<'\n';
-//    std::cerr<<b->toString()<<'\n'<<'\n';
 
     assert(a->mParent != a);
     assert(b->mParent != b);

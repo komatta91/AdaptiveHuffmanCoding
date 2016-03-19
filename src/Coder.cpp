@@ -33,9 +33,13 @@ void Coder::readAndSave(boost::filesystem::ifstream &inFile, boost::filesystem::
     char data = 0;
 
     boost::progress_display show_progress(inputFileSze);
+    std::string rrr;
     while (inputFileSze > read) {
         inFile.read(&data, 1);
-        result += mCodeTree.getCode(data);
+//        std::cerr<<"---------------------------------------------\n";
+        rrr = mCodeTree.getCode(data);
+        result += rrr;
+//        std::cerr<<data<<" -> "<<rrr<<'\n';
         savePartial(outFile, result);
         read += 1;
         ++show_progress;

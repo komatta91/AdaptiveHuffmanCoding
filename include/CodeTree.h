@@ -81,24 +81,13 @@ class CodeTree {
         bool isZero() {
             return mSymbol == "ZERO";
         }
-
-        std::string toString(){
-            std::ostringstream res;
-            res<<"Node:"<<mSymbol<<"/"<<mCount;
-            if(mLeft)
-                res<<" Left:"<<mLeft->mSymbol<<"/"<<mLeft->mCount;
-            if(mRight)
-                res<<" Right:"<<mRight->mSymbol<<"/"<<mRight->mCount;
-            if(mParent)
-                res<<" Parent:"<<mParent->mSymbol<<"/"<<mParent->mCount;
-            return res.str();
-        };
     };
 
     typedef std::shared_ptr<Node> NodePtr;
 
     NodePtr mRoot;
     std::string mDecodeQueue;
+    bool newSymbolNext;
 
 public:
     CodeTree();
@@ -123,6 +112,8 @@ private:
     NodePtr getMaxInClass(int clas);
 
     void swapNodes(NodePtr a, NodePtr b);
+
+    std::string zeroCode();
 };
 
 #endif //ADAPTIVEHUFFMANCODING_CODETREE_H

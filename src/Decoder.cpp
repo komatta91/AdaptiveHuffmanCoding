@@ -34,11 +34,9 @@ void Decoder::readAndSave(boost::filesystem::ifstream &inFile, boost::filesystem
     boost::progress_display show_progress(inputFileSize);
     while (inputFileSize-1 > read) {
         inFile.read(&data, 1);
-//        std::cerr<<"---------------------------------------------\n";
         bits = std::bitset<8>(data).to_string();
         result = mCodeTree.getDecoded(bits);
         outFile << result;
-//        std::cerr<<bits<<" -> "<<result<<'\n'<<'\n';
         read += 1;
         ++show_progress;
     }
@@ -46,6 +44,7 @@ void Decoder::readAndSave(boost::filesystem::ifstream &inFile, boost::filesystem
     inFile.read(&data, 1);
     char usableBits = 0;
     inFile.read(&usableBits, 1);
+    ++show_progress;
 
     saveEnd(outFile, data, usableBits);
 }

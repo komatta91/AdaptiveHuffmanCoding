@@ -73,8 +73,27 @@ CodeTree::NodePtr CodeTree::addNode(char symbol) {
     assert(zero);
 
     zero->mSymbol = mGenerator.generate();
-    zero->mLeft = NodePtr(new Node(zero));;
+    zero->mLeft = NodePtr(new Node(zero));
     zero->mRight = NodePtr(new Node(zero, std::string(&symbol, 1)));;
+/*
+ _______ .______    __    ______
+|   ____||   _  \  |  |  /      |
+|  |__   |  |_)  | |  | |  ,----'
+|   __|  |   ___/  |  | |  |
+|  |____ |  |      |  | |  `----.
+|_______|| _|      |__|  \______|
+ */
+    processNode(zero);// Praise be to the flying spaghetti monster!
+/*
+ _______  __  ___   ___
+|   ____||  | \  \ /  /
+|  |__   |  |  \  V  /
+|   __|  |  |   >   <
+|  |     |  |  /  .  \
+|__|     |__| /__/ \__\
+
+ */
+
     return zero;
 }
 
@@ -110,7 +129,8 @@ CodeTree::NodePtr CodeTree::getMaxInClass(int clas) {
 }
 
 void CodeTree::swapNodes(NodePtr a, NodePtr b) {
-    //TODO Tu są jakieś błądy ale nie potrafię ich zlokalizować
+    //Tu są jakieś błądy ale nie potrafię ich zlokalizować
+    //Not anymore there isn't
     std::string aCode = a->getCode();
     std::string bCode = b->getCode();
 
@@ -138,6 +158,11 @@ void CodeTree::swapNodes(NodePtr a, NodePtr b) {
         a->mParent = bParent;
         b->mParent = aParent;
     }
+
+    assert(a->mParent != a);
+    assert(b->mParent != b);
+    assert(a->mParent != b);
+    assert(b->mParent != a);
     assert(aCode == b->getCode());
     assert(bCode == a->getCode());
 }

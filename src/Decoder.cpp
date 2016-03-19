@@ -10,9 +10,16 @@
 
 Decoder::Decoder(boost::filesystem::path path) : mPath(path) { }
 
-void Decoder::decompressAndSave() {
+void Decoder::decompressAndSave(bool rename) {
     boost::filesystem::path destPath = mPath;
-    destPath.replace_extension(std::string("dec"));
+    destPath.replace_extension();
+    if (rename) {
+        boost::filesystem::path test = destPath.extension();
+        destPath.replace_extension();
+        destPath.concat("_dec");
+        destPath.replace_extension(test);
+    }
+
     if (boost::filesystem::exists(destPath)) {
         boost::filesystem::remove(destPath);
     }

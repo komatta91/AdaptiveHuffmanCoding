@@ -5,25 +5,21 @@
 #include <Core.h>
 #include "HuffmanCode.h"
 
-
-using namespace std;
-
-namespace po = boost::program_options;
-
 int main(int argc, const char* argv[]){
-    po::options_description description("AdaptiveHuffmanCoding Usage");
+    boost::program_options::options_description description("AdaptiveHuffmanCoding Usage");
 
     description.add_options()
             ("help,h", "Display this help message")
-            ("input-files", po::value<std::vector<std::string>>(), "Input files")
+            ("rename,r", "Add \"_dec\" to decoded file (default false)")
+            ("input-files", boost::program_options::value<std::vector<std::string>>(), "Input files to encode/decode. Input file will be encode and save with \"kf\" extension. If input file has \"kf\" extension will be decodes.")
             ("version,v", "Display the version number");
 
-    po::positional_options_description p;
+    boost::program_options::positional_options_description p;
     p.add("input-files", -1);
 
-    po::variables_map vm;
-    po::store(po::command_line_parser(argc, argv).options(description).positional(p).run(), vm);
-    po::notify(vm);
+    boost::program_options::variables_map vm;
+    boost::program_options::store(boost::program_options::command_line_parser(argc, argv).options(description).positional(p).run(), vm);
+    boost::program_options::notify(vm);
 
     if(vm.count("help")){
         std::cout << description;
@@ -37,11 +33,15 @@ int main(int argc, const char* argv[]){
         return 0;
     }
 
+    bool rename = false;
+    if(vm.count("rename")){
+        rename = true;
+    }
 
     if(vm.count("input-files")){
         std::vector<std::string> files = vm["input-files"].as<std::vector<std::string>>();
         for(std::string file : files){
-            HuffmanCode h(file);
+            HuffmanCode h(file, rename);
             h.run();
 
         }

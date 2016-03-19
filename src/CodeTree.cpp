@@ -211,8 +211,6 @@ CodeTree::NodePtr CodeTree::getMaxInClass(int clas) {
 }
 
 void CodeTree::swapNodes(NodePtr a, NodePtr b) {
-    //Tu są jakieś błądy ale nie potrafię ich zlokalizować
-    //Not anymore there isn't
     std::string aCode = a->getCode();
     std::string bCode = b->getCode();
 

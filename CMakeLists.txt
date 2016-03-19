@@ -4,9 +4,9 @@ project(AdaptiveHuffmanCoding)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11")
 
 
-set(CORE_MAJOR_VERSION 0)
+set(CORE_MAJOR_VERSION 1)
 set(CORE_MINOR_VERSION 0)
-set(CORE_PATCH_VERSION 1)
+set(CORE_PATCH_VERSION 0)
 set(CORE_VERSION
         ${CORE_MAJOR_VERSION}.${CORE_MINOR_VERSION}.${CORE_PATCH_VERSION})
 
@@ -34,7 +34,7 @@ set(SOURCE_FILES
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/bin)
 
 
-set(BOOST_ROOT "D:/Dev/CppWorkspace/boost_1_60_0")
+set(BOOST_ROOT "E:/Programowanie/CLion/Middleware/boost_1_60_0")
 
 set (Boost_NO_SYSTEM_PATHS ON)
 set (Boost_USE_MULTITHREADED ON)

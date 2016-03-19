@@ -8,7 +8,7 @@
 #include <Coder.h>
 #include <Decoder.h>
 
-HuffmanCode::HuffmanCode(const std::string &filename) : mFilename(filename) {
+HuffmanCode::HuffmanCode(const std::string &filename, bool rename) : mFilename(filename), mRename(rename) {
 
 }
 
@@ -24,6 +24,6 @@ void HuffmanCode::run() {
         coder.compressAndSave();
     } else {
         Decoder decoder(path);
-        decoder.decompressAndSave();
+        decoder.decompressAndSave(mRename);
     }
 }

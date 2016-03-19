@@ -9,9 +9,10 @@
 
 class HuffmanCode {
     std::string mFilename;
+    bool mRename;
 
 public:
-    HuffmanCode(const std::string &filename);
+    HuffmanCode(const std::string &filename, bool rename = false);
 
     void run();
 };

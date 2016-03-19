@@ -7,12 +7,19 @@
 
 #include <boost/filesystem.hpp>
 
+#include "CodeTree.h"
+
 class Decoder {
     boost::filesystem::path mPath;
+    CodeTree mCodeTree;
+
 public:
     Decoder(boost::filesystem::path path);
-
     void decompressAndSave();
+
+private:
+    void readAndSave(boost::filesystem::ifstream &inFile, boost::filesystem::ofstream &outFile);
+    void saveEnd(boost::filesystem::ofstream &outFile, char& data, char& usableBits);
 
 };
 

@@ -8,8 +8,13 @@
 #include <memory>
 #include <list>
 #include <NameGenerator.h>
+#include <cassert>
+
+
+#define PREFIX "NOD"
 
 class CodeTree {
+    static std::string mPrefix;
     NameGenerator mGenerator;
 
     struct Node {
@@ -36,6 +41,15 @@ class CodeTree {
             std::list<NodePtr> list;
             std::string result;
 
+            if(mParent){
+                if(mParent->mLeft->mSymbol == mSymbol){
+                    result = "0" + result;
+                }
+                if(mParent->mRight->mSymbol == mSymbol){
+                    result = "1" + result;
+                }
+            }
+
             list.push_back(mParent);
             while (!list.empty()) {
                 NodePtr node = list.front();
@@ -59,21 +73,35 @@ class CodeTree {
             }
             return result;
         }
+
+        bool isInternalNode() {
+            return mSymbol.compare(0, CodeTree::mPrefix.length(), CodeTree::mPrefix) == 0;
+        }
+
+        bool isZero() {
+            return mSymbol == "ZERO";
+        }
     };
 
     typedef std::shared_ptr<Node> NodePtr;
 
     NodePtr mRoot;
+    std::string mDecodeQueue;
+    bool newSymbolNext;
 
 public:
     CodeTree();
 
     std::string getCode(char input);
 
+    std::string getDecoded(std::string bits);
+
 private:
     NodePtr getNode(std::string symbol);
 
     std::string encode(char input);
+
+    char decode(std::string input);
 
     void updateModel(char input, NodePtr node);
 
@@ -84,6 +112,8 @@ private:
     NodePtr getMaxInClass(int clas);
 
     void swapNodes(NodePtr a, NodePtr b);
+
+    std::string zeroCode();
 };
 
 #endif //ADAPTIVEHUFFMANCODING_CODETREE_H

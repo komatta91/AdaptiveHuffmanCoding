@@ -48,7 +48,7 @@ void Coder::savePartial(boost::filesystem::ofstream &outFile, std::string &sourc
         while (source.size() >= CHAR_BIT) {
             std::string first = source.substr(0, CHAR_BIT);
             if (source.size() > 8) {
-                source = source.substr(CHAR_BIT + 1, source.size());
+                source = source.substr(CHAR_BIT, source.size());// 4h spent to find teh problem - redundant +1 :-/
             }
             else {
                 source.clear();

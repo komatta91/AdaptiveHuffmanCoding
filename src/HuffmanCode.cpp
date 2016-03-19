@@ -19,7 +19,7 @@ void HuffmanCode::run() {
         std::cout << mFilename << ": " << ec.message();
         return;
     }
-    if (path.extension() != ".kh") {
+    if (path.extension() != ".kf") {
         Coder coder(path);
         coder.compressAndSave();
     } else {

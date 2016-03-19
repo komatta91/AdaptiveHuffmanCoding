@@ -8,8 +8,13 @@
 #include <memory>
 #include <list>
 #include <NameGenerator.h>
+#include <cassert>
+
+
+#define PREFIX "NOD"
 
 class CodeTree {
+    static std::string mPrefix;
     NameGenerator mGenerator;
 
     struct Node {
@@ -36,6 +41,15 @@ class CodeTree {
             std::list<NodePtr> list;
             std::string result;
 
+            if(mParent){
+                if(mParent->mLeft->mSymbol == mSymbol){
+                    result = "0" + result;
+                }
+                if(mParent->mRight->mSymbol == mSymbol){
+                    result = "1" + result;
+                }
+            }
+
             list.push_back(mParent);
             while (!list.empty()) {
                 NodePtr node = list.front();
@@ -59,21 +73,46 @@ class CodeTree {
             }
             return result;
         }
+
+        bool isInternalNode() {
+            return mSymbol.compare(0, CodeTree::mPrefix.length(), CodeTree::mPrefix) == 0;
+        }
+
+        bool isZero() {
+            return mSymbol == "ZERO";
+        }
+
+        std::string toString(){
+            std::ostringstream res;
+            res<<"Node:"<<mSymbol<<"/"<<mCount;
+            if(mLeft)
+                res<<" Left:"<<mLeft->mSymbol<<"/"<<mLeft->mCount;
+            if(mRight)
+                res<<" Right:"<<mRight->mSymbol<<"/"<<mRight->mCount;
+            if(mParent)
+                res<<" Parent:"<<mParent->mSymbol<<"/"<<mParent->mCount;
+            return res.str();
+        };
     };
 
     typedef std::shared_ptr<Node> NodePtr;
 
     NodePtr mRoot;
+    std::string mDecodeQueue;
 
 public:
     CodeTree();
 
     std::string getCode(char input);
 
+    std::string getDecoded(std::string bits);
+
 private:
     NodePtr getNode(std::string symbol);
 
     std::string encode(char input);
+
+    char decode(std::string input);
 
     void updateModel(char input, NodePtr node);
 

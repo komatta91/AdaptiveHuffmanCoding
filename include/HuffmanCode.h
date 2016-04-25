@@ -14,7 +14,7 @@ class HuffmanCode {
 public:
     HuffmanCode(const std::string &filename, bool rename = false);
 
-    void run();
+    void run(bool debug);
 };
 
 

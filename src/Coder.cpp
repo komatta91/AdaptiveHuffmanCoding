@@ -10,7 +10,7 @@
 
 #define CHAR_BIT 8
 
-Coder::Coder(boost::filesystem::path path) : mPath(path) { }
+Coder::Coder(boost::filesystem::path path) : mPath(path), outputFileLength(0), numOutputCodeword(0) { }
 
 void Coder::compressAndSave() {
     boost::filesystem::path destPath = mPath;
@@ -26,16 +26,29 @@ void Coder::compressAndSave() {
     outFile.close();
 }
 
+void Coder::printDebugInfo()
+{
+    std::cout << "Data:" << std::endl;
+    std::cout << " - avg codeword length:" << (double)outputFileLength / numOutputCodeword << std::endl;
+    std::cout << " - input file length:" << outputFileLength << std::endl;
+    std::cout << " - output file length:" << outputFileLength << std::endl;
+    std::cout << " - compress ratio:" << outputFileLength / (numOutputCodeword * 8.0) << std::endl;
+}
+
 void Coder::readAndSave(boost::filesystem::ifstream &inFile, boost::filesystem::ofstream &outFile) {
     std::string result;
     uintmax_t inputFileSze = boost::filesystem::file_size(mPath);
     uintmax_t read = 0;
     char data = 0;
 
+    std::string temp;
     boost::progress_display show_progress(inputFileSze);
     while (inputFileSze > read) {
         inFile.read(&data, 1);
-        result += mCodeTree.getCode(data);
+        numOutputCodeword++;
+        temp = mCodeTree.getCode(data);
+        outputFileLength += temp.size();
+        result += temp;
         savePartial(outFile, result);
         read += 1;
         ++show_progress;

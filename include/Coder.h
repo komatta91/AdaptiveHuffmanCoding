@@ -12,9 +12,15 @@ class Coder {
 	boost::filesystem::path mPath;
 	CodeTree mCodeTree;
 
+	//Debug info
+	unsigned int numOutputCodeword;
+	unsigned int outputFileLength;
+	unsigned int inputFileLength;
+
 public:
 	Coder(boost::filesystem::path path);
 	void compressAndSave();
+	void printDebugInfo();
 
 private:
 	void readAndSave(boost::filesystem::ifstream &inFile, boost::filesystem::ofstream &outFile);

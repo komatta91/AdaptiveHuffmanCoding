@@ -16,6 +16,7 @@ class Decoder {
 public:
     Decoder(boost::filesystem::path path);
     void decompressAndSave(bool rename);
+    void printDebugInfo() {};
 
 private:
     void readAndSave(boost::filesystem::ifstream &inFile, boost::filesystem::ofstream &outFile);

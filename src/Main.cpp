@@ -11,6 +11,7 @@ int main(int argc, const char* argv[]){
     description.add_options()
             ("help,h", "Display this help message")
             ("rename,r", "Add \"_dec\" to decoded file (default false)")
+            ("debug,d", "Print debug statistics")
             ("input-files", boost::program_options::value<std::vector<std::string>>(), "Input files to encode/decode. Input file will be encode and save with \"kf\" extension. If input file has \"kf\" extension will be decodes.")
             ("version,v", "Display the version number");
 
@@ -38,11 +39,16 @@ int main(int argc, const char* argv[]){
         rename = true;
     }
 
+    bool debug = false;
+    if(vm.count("rename")){
+        debug = true;
+    }
+
     if(vm.count("input-files")){
         std::vector<std::string> files = vm["input-files"].as<std::vector<std::string>>();
         for(std::string file : files){
             HuffmanCode h(file, rename);
-            h.run();
+            h.run(debug);
 
         }
     }

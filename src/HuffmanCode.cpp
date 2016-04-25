@@ -12,7 +12,7 @@ HuffmanCode::HuffmanCode(const std::string &filename, bool rename) : mFilename(f
 
 }
 
-void HuffmanCode::run() {
+void HuffmanCode::run(bool debug) {
     boost::filesystem::path path(mFilename);
     boost::system::error_code ec;
     if (!boost::filesystem::exists(path, ec)) {
@@ -22,6 +22,10 @@ void HuffmanCode::run() {
     if (path.extension() != ".kf") {
         Coder coder(path);
         coder.compressAndSave();
+        if (debug)
+        {
+            coder.printDebugInfo();
+        }
     } else {
         Decoder decoder(path);
         decoder.decompressAndSave(mRename);

@@ -28,9 +28,18 @@ void Coder::compressAndSave() {
 
 void Coder::printDebugInfo()
 {
+    int codeWords = 0;
+    double avgLen = 0.0;
+    for(std::map<std::string,int>::iterator it=codewordsMap.begin(); it!=codewordsMap.end(); ++it){
+        codeWords += it->second;
+        avgLen += it->first.length() * it->second;
+    }
+    avgLen = avgLen / codeWords;
+
     std::cout << "Data:" << std::endl;
     std::cout << " - avg codeword length:" << (double)outputFileLength / numOutputCodeword << std::endl;
-    std::cout << " - input file length:" << outputFileLength << std::endl;
+    std::cout << " - avg andrzej codeword length:" << avgLen << std::endl;
+    std::cout << " - input file length:" << numOutputCodeword * 8.0<< std::endl;
     std::cout << " - output file length:" << outputFileLength << std::endl;
     std::cout << " - compress ratio:" << outputFileLength / (numOutputCodeword * 8.0) << std::endl;
 }
@@ -47,6 +56,11 @@ void Coder::readAndSave(boost::filesystem::ifstream &inFile, boost::filesystem::
         inFile.read(&data, 1);
         numOutputCodeword++;
         temp = mCodeTree.getCode(data);
+        if(codewordsMap.count(temp) > 0){
+            codewordsMap[temp]+=1;
+        }else{
+            codewordsMap[temp]=1;
+        }
         outputFileLength += temp.size();
         result += temp;
         savePartial(outFile, result);

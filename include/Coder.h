@@ -6,6 +6,7 @@
 #define ADAPTIVEHUFFMANCODING_CODER_H
 
 #include <boost/filesystem.hpp>
+#include <map>
 #include <CodeTree.h>
 
 class Coder {
@@ -16,6 +17,7 @@ class Coder {
 	unsigned int numOutputCodeword;
 	unsigned int outputFileLength;
 	unsigned int inputFileLength;
+	std::map<std::string, int> codewordsMap;
 
 public:
 	Coder(boost::filesystem::path path);
